@@ -1,0 +1,28 @@
+{
+  "name": "shopping-report-builder",
+  "version": "0.0.1",
+  "main": "build/index.js",
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "npm run bundle",
+    "bundle": "rollup --no-treeshake -c rollup.config.mjs",
+    "copy-files": "cpx appsscript.json ../dist",
+    "deploy": "npm run test && npm run build && npm run copy-files",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.13",
+    "@types/node": "^22.5.5",
+    "cpx": "^1.5.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "typescript": "~5.5.2"
+  },
+  "dependencies": {
+    "@types/google-apps-script": "^1.0.83",
+    "rollup": "^3.29.5",
+    "rollup-plugin-cleanup": "^3.2.1",
+    "rollup-plugin-license": "^3.0.1",
+    "rollup-plugin-typescript2": "^0.35.0"
+  }
+}

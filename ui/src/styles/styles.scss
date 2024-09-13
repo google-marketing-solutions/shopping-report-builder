@@ -1,0 +1,67 @@
+/**
+ * Copyright 2024 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@use '@angular/material' as mat;
+@use './theme-colors' as my-theme-colors;
+
+$m3-theme: mat.define-theme((
+  color: (
+    theme-type: dark,
+    primary: my-theme-colors.$primary-palette,
+    tertiary: my-theme-colors.$tertiary-palette,
+  )
+));
+
+:root {
+  @include mat.theme($m3-theme);
+  @include mat.all-component-themes($m3-theme);
+  @include mat.table-overrides((
+    header-headline-color: --var(--md-sys-color-on-background)
+  ));
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  color: var(--md-sys-color-primary);
+  background-color: var(--md-sys-color-background);
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.primary-btn {
+  @include mat.button-color($m3-theme, $color-variant: primary)
+}
+.secondary-btn {
+  @include mat.button-color($m3-theme, $color-variant: secondary)
+}
+.tertiary-btn {
+  @include mat.button-color($m3-theme, $color-variant: tertiary)
+}
+.error-btn {
+  @include mat.button-color($m3-theme, $color-variant: error)
+}
+
+.mat-mdc-progress-spinner {
+  --mdc-circular-progress-active-indicator-color: white;
+}

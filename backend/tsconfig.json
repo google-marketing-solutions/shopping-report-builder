@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "outDir": "../dist",
+    "moduleResolution": "node",
+    "rootDir": ".",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "module": "es2020",
+    "target": "es2020",
+    "lib": [
+      "es2020",
+      "dom"
+    ],
+    "types": [
+      "@types/google-apps-script",
+      "node",
+      "jest",
+    ],
+  },
+  "include": [
+    "**/*.ts"
+  ],
+  "exclude": [
+    "tests/**/*"
+  ]
+}

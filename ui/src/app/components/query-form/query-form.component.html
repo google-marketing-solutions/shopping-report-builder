@@ -1,0 +1,62 @@
+<!--
+ Copyright 2024 Google LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<section *ngIf="apiErrors && apiErrors.length > 0" class="errors">
+  <span>{{ apiErrors }}</span>
+</section>
+
+<section *ngIf="successMessage.length > 0" class="success">
+  <span>{{ successMessage }}</span>
+</section>
+
+<mat-form-field class="full-width">
+  <mat-label>Merchant ID</mat-label>
+  <input
+      type="number"
+      aria-label="MerchantID"
+      matInput [(ngModel)]="merchantId"
+      [matAutocomplete]="auto"
+      required
+      (input)="onMerchantIdInputChange($event)"
+      >
+  <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+    @for (option of filteredMerchantIds | async; track option) {
+      <mat-option [value]="option">{{option}}</mat-option>
+    }
+  </mat-autocomplete>
+</mat-form-field>
+
+<mat-form-field class="full-width">
+  <mat-label>Query</mat-label>
+  <textarea matInput type="text" [(ngModel)]="query" required></textarea>
+</mat-form-field>
+
+<mat-form-field class="full-width">
+  <mat-label>Export Sheet Name</mat-label>
+  <input matInput type="text" [(ngModel)]="sheetName" [value]="sheetName" required>
+</mat-form-field>
+
+<div class="btn-container">
+  <a mat-flat-button class="primary-btn preview-btn" (click)="onPreview()" [disabled]="!isFormValid()">
+    <span *ngIf="!isPreviewLoading">Preview</span>
+    <mat-spinner *ngIf="isPreviewLoading" diameter="20" mode="indeterminate">
+    </mat-spinner>
+  </a>
+  <a mat-flat-button class="tertiary-btn export-btn" (click)="onExport()" [disabled]="!isFormValid()">
+    <span *ngIf="!isExportLoading">Export</span>
+    <mat-spinner *ngIf="isExportLoading" diameter="20" mode="indeterminate">
+    </mat-spinner>
+  </a>
+</div>

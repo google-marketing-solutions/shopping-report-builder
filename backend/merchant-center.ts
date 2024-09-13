@@ -180,7 +180,10 @@ class MerchantCenterAPI {
     return responseData.map((item) => {
       const transformedItem: {[key: string]: any} = {};
       // Recursively extract nested properties
-      const extractNestedProperties = (obj: { [x: string]: any; }, prefix = '') => {
+      const extractNestedProperties = (
+        obj: {[x: string]: any},
+        prefix = '',
+      ) => {
         for (const key in obj) {
           if (typeof obj[key] === 'object' && obj[key] !== null) {
             extractNestedProperties(

@@ -24,6 +24,19 @@ Create a copy of this Google Sheet.
 ## Manual Deployment
 TODO: write me.
 
+1. Make sure your system has an up-to-date installation of [Node.js and npm](
+    https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
+1. Install clasp by running `npm install @google/clasp -g`, then login via clasp
+    login.
+1. Navigate to [the Apps Script Settings page](
+    https://script.google.com/corp/home/usersettings) and enable the Apps Script
+    API.
+1. Create a new Google Sheet -> Extensions -> App Script -> Project settings and
+    copy the ID.
+1. Run `cp example.clasp.json .clasp.json` and update the `.clasp.json` scriptId
+    to the App Script ID you copied in the previous step.
+1. Run `./deploy.sh`.
+
 ## Local Development
 TODO: write me.
 

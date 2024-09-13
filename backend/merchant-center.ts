@@ -126,21 +126,12 @@ class MerchantCenterAPI {
       pageSize: pageSize,
     };
 
-    if (!fullDownload) {
-      const response = this.call(
-        merchantId + '/reports/search',
-        'post',
-        queryEntries,
-      );
-      return response.results || [];
-    }
-
-    let pageToken = '';
+    let pageToken: string | null = '';
     const fullResults: any[] = [];
     let nTries = 0;
     const maxTries = 3;
 
-    while (pageToken !== null) {
+    do {
       queryEntries.pageToken = pageToken;
 
       const response = this.call(
@@ -149,10 +140,7 @@ class MerchantCenterAPI {
         queryEntries,
       );
 
-      if (Array.isArray(response.results) && response.nextPageToken != null) {
-        pageToken = response.nextPageToken;
-        fullResults.push(...response.results);
-      } else if (response.error !== null && response.error !== undefined) {
+      if (response.error !== null && response.error !== undefined) {
         // @ts-ignore
         Logger.log(`Error(${response.error.code}): ${response.error.message}`);
         if (response.error.code === 500) {
@@ -167,10 +155,15 @@ class MerchantCenterAPI {
           );
         }
         break;
-      } else {
-        break;
       }
-    }
+
+      // Process results if no errors
+      if (Array.isArray(response.results)) {
+        fullResults.push(...response.results);
+      }
+
+      pageToken = response.nextPageToken || null;
+    } while (fullDownload && pageToken !== null);
 
     // @ts-ignore
     Logger.log(`Final results: ${fullResults.length} rows.`);

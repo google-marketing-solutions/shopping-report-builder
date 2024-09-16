@@ -24,10 +24,9 @@
  *
  * This function is the entry point for GET requests to the web app.
  *
- * @return {HtmlOutput} The evaluated HTML output.
+ * @return {GoogleAppsScript.HTML.HtmlOutput} The evaluated HTML output.
  */
-function doGet() {
-  // @ts-ignore
+function doGet(): GoogleAppsScript.HTML.HtmlOutput {
   return HtmlService.createTemplateFromFile('ui').evaluate();
 }
 
@@ -41,7 +40,6 @@ function doGet() {
  * @param {string} filename - The name of the HTML file to be included.
  * @return {string} The content of the specified HTML file.
  */
-function include(filename: string) {
-  // @ts-ignore
+function include(filename: string): string {
   return HtmlService.createHtmlOutputFromFile(filename).getContent();
 }

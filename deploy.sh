@@ -13,9 +13,9 @@
 # limitations under the License.
 cd backend
 npm install -D
-npm run build
+npm run build || exit
 
 cd ..
 
-# cp .clasp.json dist/
+cp .clasp.json dist/
 clasp push

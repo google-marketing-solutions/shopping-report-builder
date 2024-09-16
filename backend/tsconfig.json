@@ -14,15 +14,21 @@
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2020",
-    "module": "es2020",
+    "target": "es5",
+    "module": "commonjs",
     "lib": [
-      "es2020",
-      "ES2021.String",
+      "es5",
       "dom"
+    ],
+    "types": [
+      "@types/google-apps-script",
+      "node",
     ],
   },
   "include": [
     "**/*.ts"
+  ],
+  "exclude": [
+    "tests/**/*"
   ]
 }

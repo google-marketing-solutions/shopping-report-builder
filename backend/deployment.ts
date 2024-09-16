@@ -19,8 +19,6 @@
  * @see {@link https://developers.google.com/apps-script/guides/html/templates}
  */
 
-export const deploymentHelper = null;
-
 /**
  * Serves the main HTML template for the web app.
  *

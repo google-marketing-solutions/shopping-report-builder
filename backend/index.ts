@@ -18,6 +18,7 @@
  * @fileoverview
  */
 
-import { deploymentHelper } from "./deployment";
+import { doGet, include } from "./deployment";
 
-deploymentHelper;
+doGet;
+include;

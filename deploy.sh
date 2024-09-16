@@ -13,7 +13,7 @@
 # limitations under the License.
 cd backend
 npm install -D
-npm run build || exit
+npm run deploy || exit
 
 cd ..
 

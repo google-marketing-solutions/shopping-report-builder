@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-/**
- * @fileoverview
- */
-
-import { deploymentHelper } from "./deployment";
-
-deploymentHelper;
+module.exports = {
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+}

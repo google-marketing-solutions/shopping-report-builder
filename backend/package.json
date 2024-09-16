@@ -6,11 +6,15 @@
   "scripts": {
     "build": "npm run bundle && npm run copy-files",
     "bundle": "rollup --no-treeshake -c rollup.config.mjs",
-    "copy-files": "cpx appsscript.json ../dist"
+    "copy-files": "cpx appsscript.json ../dist",
+    "test": "jest"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.13",
     "@types/node": "^22.5.5",
     "cpx": "^1.5.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
     "typescript": "~5.5.2"
   },
   "dependencies": {

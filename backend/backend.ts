@@ -19,7 +19,9 @@
  * All code in this file is imported to Apps Script and deployed as the backend.
  */
 
-import { doGet, include } from "./deployment";
+import {doGet, include} from "./deployment";
+import {MerchantCenterAPI} from "./merchant-center";
 
 doGet;
 include;
+MerchantCenterAPI;

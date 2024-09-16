@@ -14,6 +14,45 @@
  * limitations under the License.
  */
 
-export interface MCReportsSearchRequest {
+/**
+ * @fileoverview Definitions for the models used in the backend code.
+ */
+
+/**
+ * Interface for making requests to the Merchant Center API.
+ */
+export interface MerchantCenterAPIRequest {
+  url: string;
+  method: string;
+  contentType: string;
+  headers: {
+    Authorization: string;
+  };
+  muteHttpExceptions: boolean;
+  payload?: string;
+}
+
+/**
+ * Interface for the Merchant Center API response.
+ */
+export interface MerchantCenterAPIResponse {
+  results?: Array<any>;
+  nextPageToken?: string | null;
+  error?: {
+    code: number;
+    message: string;
+  };
+}
+
+/**
+ * Interface for making a call to the report endpoint of the API.
+ */
+export interface MerchantCenterAPIReportRequest {
+  merchantId: number;
   query: string;
+  fetchAll: boolean;
+  payload: {
+    pageSize: number;
+    pageToken?: string;
+  };
 }

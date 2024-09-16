@@ -15,7 +15,8 @@
  */
 
 /**
- * @fileoverview
+ * @fileoverview this file represents the output that's uploaded to Apps Script.
+ * All code in this file is imported to Apps Script and deployed as the backend.
  */
 
 import { doGet, include } from "./deployment";

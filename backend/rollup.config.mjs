@@ -19,7 +19,7 @@ import license from 'rollup-plugin-license';
 import { fileURLToPath } from 'url';
 
 export default {
-  input: 'index.ts',
+  input: 'backend.ts',
   output: {
     dir: '../dist',
     format: 'esm',

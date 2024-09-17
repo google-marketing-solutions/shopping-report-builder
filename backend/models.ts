@@ -49,9 +49,9 @@ export interface MerchantCenterAPIResponse {
  */
 export interface MerchantCenterAPIReportRequest {
   merchantId: number;
-  query: string;
   fetchAll: boolean;
   payload: {
+    query: string;
     pageSize: number;
     pageToken?: string;
   };

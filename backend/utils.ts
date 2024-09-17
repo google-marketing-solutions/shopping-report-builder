@@ -15,15 +15,18 @@
  */
 
 /**
- * @fileoverview this file represents the output that's uploaded to Apps Script.
- * All code in this file is imported to Apps Script and deployed as the backend.
+ * @fileoverview general utilities and helper functions for the project.
  */
 
-import {doGet, include} from "./deployment";
-import {MerchantCenterAPI} from "./merchant-center";
-import {getOAuthToken} from "./utils";
+/**
+ * Retrieves the OAuth token for the script.
+ *
+ * @return {string} The OAuth token for the script.
+ */
+function getOAuthToken(): string {
+  return ScriptApp.getOAuthToken();
+}
 
-doGet;
-include;
-MerchantCenterAPI;
-getOAuthToken;
+export {
+  getOAuthToken,
+}

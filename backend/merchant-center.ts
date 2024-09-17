@@ -112,8 +112,23 @@ export class MerchantCenterAPI {
    */
   callAllPages(request: MerchantCenterAPIRequest): Array<any> {
     Logger.log(`Running callAllPages() for ${JSON.stringify(request)}`);
-    // TODO: write me
-    return [];
+    let allResults: Array<any> = [];
+    let nextPageToken: string | null | undefined = undefined;
+
+    do {
+      const requestCopy = {...request};
+      if (nextPageToken) {
+        const parsedPayload = JSON.parse(requestCopy.payload || '{}');
+        parsedPayload.pageToken = nextPageToken;
+        requestCopy.payload = JSON.stringify(parsedPayload);
+      }
+
+      const response = this.call(requestCopy);
+      allResults = allResults.concat(response.results || []);
+      nextPageToken = response.nextPageToken;
+    } while (nextPageToken);
+
+    return allResults;
   }
 
   /**

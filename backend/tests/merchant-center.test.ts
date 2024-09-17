@@ -8,7 +8,7 @@
  *       https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed    under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -27,6 +27,10 @@ global.UrlFetchApp = {
 
 global.Logger = {
   log: jest.fn(),
+} as any;
+
+global.Utilities = {
+  sleep: jest.fn(),
 } as any;
 
 describe('MerchantCenterAPI', () => {
@@ -189,5 +193,61 @@ describe('MerchantCenterAPI', () => {
 
     expect(api.callAllPages).toHaveBeenCalled();
     expect(report).toEqual(mockMerchantCenterAPIResponse.results);
+  });
+
+  it('callAllPages() should retrieve all pages of a report', () => {
+    mockMerchantCenterAPIRequest.payload = JSON.stringify({
+      query:
+        'SELECT ' +
+        'product_view.id, ' +
+        'product_view.title, ' +
+        'FROM ProductView',
+      pageSize: 10,
+    });
+
+    const mockResponses: MerchantCenterAPIResponse[] = [
+      {
+        results: [
+          {
+            productView: {
+              title: 'Product 1',
+              id: '123',
+            },
+          },
+        ],
+        nextPageToken: 'token1',
+      },
+      {
+        results: [
+          {
+            productView: {
+              title: 'Product 2',
+              id: '456',
+            },
+          },
+        ],
+        nextPageToken: null,
+      },
+    ];
+
+    const callSpy = jest.spyOn(api, 'call');
+    mockResponses.forEach((response) => callSpy.mockReturnValueOnce(response));
+
+    const allResults = api.callAllPages(mockMerchantCenterAPIRequest);
+
+    expect(api.call).toHaveBeenCalledTimes(2);
+    expect(api.call).toHaveBeenNthCalledWith(1, mockMerchantCenterAPIRequest);
+    expect(api.call).toHaveBeenNthCalledWith(2, {
+      ...mockMerchantCenterAPIRequest,
+      payload: JSON.stringify({
+        ...JSON.parse(mockMerchantCenterAPIRequest.payload || '{}'),
+        pageToken: 'token1',
+      }),
+    });
+
+    const expectedResults = mockResponses.reduce((acc, response) => {
+      return acc.concat(response.results || []);
+    }, [] as any[]);
+    expect(allResults).toEqual(expectedResults);
   });
 });

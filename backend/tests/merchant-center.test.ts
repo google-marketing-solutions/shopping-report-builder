@@ -15,7 +15,11 @@
  */
 
 import {MerchantCenterAPI} from '../merchant-center';
-import {MerchantCenterAPIRequest, MerchantCenterAPIResponse} from '../models';
+import {
+  MerchantCenterAPIReportRequest,
+  MerchantCenterAPIRequest,
+  MerchantCenterAPIResponse,
+} from '../models';
 
 global.UrlFetchApp = {
   fetch: jest.fn(),
@@ -27,12 +31,50 @@ global.Logger = {
 
 describe('MerchantCenterAPI', () => {
   let api: MerchantCenterAPI;
+  let mockMerchantCenterAPIRequest: MerchantCenterAPIRequest;
+  let mockMerchantCenterAPIResponse: MerchantCenterAPIResponse;
+  let mockMerchantCenterAPIReportRequest: MerchantCenterAPIReportRequest;
 
   beforeEach(() => {
     api = new MerchantCenterAPI('mock_token');
+    mockMerchantCenterAPIRequest = {
+      url: 'https://shoppingcontent.googleapis.com/content/v2.1/1234/reports/search',
+      method: 'post',
+      contentType: 'application/json',
+      headers: {
+        Authorization: 'Bearer mock_token',
+      },
+      muteHttpExceptions: true,
+    };
+    mockMerchantCenterAPIReportRequest = {
+      merchantId: 123456789,
+      fetchAll: false,
+      payload: {
+        query:
+          'SELECT ' +
+          'product_view.id, ' +
+          'product_view.title, ' +
+          'price_competitiveness.country_code ' +
+          'FROM PriceCompetitivenessProductView',
+        pageSize: 10,
+      },
+    };
+    mockMerchantCenterAPIResponse = {
+      results: [
+        {
+          productView: {
+            title: 'Generic Product A (XXXXX1)',
+            id: 'XXXXX1',
+          },
+          priceCompetitiveness: {
+            countryCode: 'GBP',
+          },
+        },
+      ],
+    };
   });
 
-  it('should build a MerchantCenterAPIRequest object with no payload', () => {
+  it('buildMerchantCenterAPIRequest() should build a MerchantCenterAPIRequest object with no payload', () => {
     const service = 'products';
     const method = 'get';
     const expectedRequest: MerchantCenterAPIRequest = {
@@ -49,7 +91,7 @@ describe('MerchantCenterAPI', () => {
     expect(request).toEqual(expectedRequest);
   });
 
-  it('should build a MerchantCenterAPIRequest object with a payload', () => {
+  it('buildMerchantCenterAPIRequest() should build a MerchantCenterAPIRequest object with a payload', () => {
     const service = 'products/insert';
     const method = 'post';
     const payload = {
@@ -71,22 +113,11 @@ describe('MerchantCenterAPI', () => {
     expect(request).toEqual(expectedRequest);
   });
 
-  it('should handle API errors and throw an error with the error message', () => {
-    const mockRequest: MerchantCenterAPIRequest = {
-      url: 'https://shoppingcontent.googleapis.com/content/v2.1/1234/reports/search',
-      method: 'get',
-      contentType: 'application/json',
-      headers: {
-        Authorization: 'Bearer mock_token',
-      },
-      muteHttpExceptions: true,
-    };
-
+  it('call() should handle API errors and throw an error with the error message', () => {
     const mockErrorResponse = {
       error: {
         code: 400,
-        message:
-          "[query] Error in query",
+        message: '[query] Error in query',
         status: 'INVALID_ARGUMENT',
         details: [
           {
@@ -103,46 +134,60 @@ describe('MerchantCenterAPI', () => {
     });
 
     expect(() => {
-      api.call(mockRequest);
+      api.call(mockMerchantCenterAPIRequest);
     }).toThrowError(mockErrorResponse.error.message);
   });
 
-  it('should make a call to the Merchant Center API', () => {
-    const mockRequest: MerchantCenterAPIRequest = {
-      url: 'https://shoppingcontent.googleapis.com/content/v2.1/1234/reports/search',
-      method: 'get',
-      contentType: 'application/json',
-      headers: {
-        Authorization: 'Bearer mock_token',
-      },
-      muteHttpExceptions: true,
-    };
-
-    const mockResponse: MerchantCenterAPIResponse = {
-      results: [
-        {
-          'productView': {
-            'offerId': '10000',
-            'clickPotentialRank': '100',
-            'id': 'local:en:GB:10000',
-          },
-        },
-      ],
-    };
-
-    // Mock the UrlFetchApp.fetch method
+  it('call() should make a call to the Merchant Center API', () => {
     (UrlFetchApp.fetch as jest.Mock).mockReturnValue({
-      getContentText: () => JSON.stringify(mockResponse),
+      getContentText: () => JSON.stringify(mockMerchantCenterAPIResponse),
     });
 
-    const response = api.call(mockRequest);
-
-    expect(UrlFetchApp.fetch).toHaveBeenCalledWith(mockRequest.url, {
-      method: mockRequest.method,
-      contentType: mockRequest.contentType,
-      headers: mockRequest.headers,
-      muteHttpExceptions: mockRequest.muteHttpExceptions,
+    mockMerchantCenterAPIRequest.payload = JSON.stringify({
+      query: 'SELECT 1 FROM 2',
+      pageSize: 10,
     });
-    expect(response).toEqual(mockResponse);
+
+    const response = api.call(mockMerchantCenterAPIRequest);
+
+    expect(UrlFetchApp.fetch).toHaveBeenCalledWith(
+      mockMerchantCenterAPIRequest.url,
+      {
+        method: mockMerchantCenterAPIRequest.method,
+        contentType: mockMerchantCenterAPIRequest.contentType,
+        headers: mockMerchantCenterAPIRequest.headers,
+        muteHttpExceptions: mockMerchantCenterAPIRequest.muteHttpExceptions,
+        payload: mockMerchantCenterAPIRequest.payload,
+      },
+    );
+    expect(response).toEqual(mockMerchantCenterAPIResponse);
+  });
+
+  it('getReport() should retrieve a report from the Merchant Center', () => {
+    jest.spyOn(api, 'call').mockReturnValue(mockMerchantCenterAPIResponse);
+    jest
+      .spyOn(api, 'buildMerchantCenterAPIRequest')
+      .mockReturnValue(mockMerchantCenterAPIRequest);
+
+    const report = api.getReport(mockMerchantCenterAPIReportRequest);
+
+    expect(api.call).toHaveBeenCalled();
+    expect(report).toEqual(mockMerchantCenterAPIResponse.results);
+  });
+
+  it('should retrieve all pages of a report from the Merchant Center when fetchAll is true', () => {
+    mockMerchantCenterAPIReportRequest.fetchAll = true;
+
+    jest
+      .spyOn(api, 'callAllPages')
+      .mockReturnValue(mockMerchantCenterAPIResponse.results || []);
+    jest
+      .spyOn(api, 'buildMerchantCenterAPIRequest')
+      .mockReturnValue(mockMerchantCenterAPIRequest);
+
+    const report = api.getReport(mockMerchantCenterAPIReportRequest);
+
+    expect(api.callAllPages).toHaveBeenCalled();
+    expect(report).toEqual(mockMerchantCenterAPIResponse.results);
   });
 });

@@ -306,4 +306,63 @@ describe('MerchantCenterAPI', () => {
     }, [] as any[]);
     expect(allResults).toEqual(expectedResults);
   });
+
+  it('flatten() should flatten the API response', () => {
+    const nestedResponse = [
+      {
+        productView: {
+          priceMicros: '8750000',
+          id: 'online:en:GB:XXXXX1',
+          title: 'Generic Product A (XXXXX1)',
+          currencyCode: 'GBP',
+          brand: 'generic_brand_a',
+        },
+        priceCompetitiveness: {
+          benchmarkPriceCurrencyCode: 'GBP',
+          countryCode: 'GB',
+          benchmarkPriceMicros: '8125000',
+        },
+      },
+      {
+        productView: {
+          priceMicros: '54990000',
+          id: 'online:en:GB:XXXXX2',
+          title: 'Another Generic Product (XXXXX2)',
+          brand: 'generic_brand_b',
+          currencyCode: 'GBP',
+        },
+        priceCompetitiveness: {
+          benchmarkPriceCurrencyCode: 'GBP',
+          countryCode: 'GB',
+          benchmarkPriceMicros: '52000000',
+        },
+      },
+    ];
+
+    const expectedFlattenedResponse = [
+      {
+        'productView.priceMicros': '8750000',
+        'productView.id': 'online:en:GB:XXXXX1',
+        'productView.title': 'Generic Product A (XXXXX1)',
+        'productView.currencyCode': 'GBP',
+        'productView.brand': 'generic_brand_a',
+        'priceCompetitiveness.benchmarkPriceCurrencyCode': 'GBP',
+        'priceCompetitiveness.countryCode': 'GB',
+        'priceCompetitiveness.benchmarkPriceMicros': '8125000',
+      },
+      {
+        'productView.priceMicros': '54990000',
+        'productView.id': 'online:en:GB:XXXXX2',
+        'productView.title': 'Another Generic Product (XXXXX2)',
+        'productView.currencyCode': 'GBP',
+        'productView.brand': 'generic_brand_b',
+        'priceCompetitiveness.benchmarkPriceCurrencyCode': 'GBP',
+        'priceCompetitiveness.countryCode': 'GB',
+        'priceCompetitiveness.benchmarkPriceMicros': '52000000',
+      },
+    ];
+
+    const flattenedResponse = api.flatten(nestedResponse);
+    expect(flattenedResponse).toEqual(expectedFlattenedResponse);
+  });
 });

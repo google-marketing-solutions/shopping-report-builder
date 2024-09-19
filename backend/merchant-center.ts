@@ -118,7 +118,7 @@ export class MerchantCenterAPI {
         if (retryCount <= maxRetries) {
           Logger.log(
             `Error making API call (attempt ${retryCount}): ` +
-            `${(error as Error).message}. Retrying in ${delayMs}ms...`
+              `${(error as Error).message}. Retrying in ${delayMs}ms...`,
           );
           Utilities.sleep(delayMs);
           delayMs *= 2;
@@ -175,5 +175,33 @@ export class MerchantCenterAPI {
       return this.callAllPages(apiRequest);
     }
     return this.call(apiRequest).results || [];
+  }
+
+  /**
+   * Flattens the API response by extracting all nested properties.
+   *
+   * @param {any[]} responseData - The raw response data.
+   * @returns {any[]} The flattened data with all nested properties extracted.
+   */
+  flatten(responseData: any[]): any[] {
+    return responseData.map((item) => {
+      const flattenedItem: {[key: string]: any} = {};
+
+      const extractNestedProperties = (obj: any, prefix = '') => {
+        for (const key in obj) {
+          if (typeof obj[key] === 'object' && obj[key] !== null) {
+            extractNestedProperties(
+              obj[key],
+              prefix ? `${prefix}.${key}` : key,
+            );
+          } else {
+            flattenedItem[prefix ? `${prefix}.${key}` : key] = obj[key];
+          }
+        }
+      };
+
+      extractNestedProperties(item);
+      return flattenedItem;
+    });
   }
 }

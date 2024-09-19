@@ -78,6 +78,10 @@ describe('MerchantCenterAPI', () => {
     };
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('buildMerchantCenterAPIRequest() should build a MerchantCenterAPIRequest object with no payload', () => {
     const service = 'products';
     const method = 'get';
@@ -167,6 +171,58 @@ describe('MerchantCenterAPI', () => {
     expect(response).toEqual(mockMerchantCenterAPIResponse);
   });
 
+  it('call() should retry with exponential backoff on failure', () => {
+    const mockErrorResponse = {
+      error: {
+        code: 500,
+        message: 'Internal server error',
+      },
+    };
+
+    // Simulate API error for the first 3 calls, then success
+    (UrlFetchApp.fetch as jest.Mock)
+      .mockReturnValueOnce({
+        getContentText: () => JSON.stringify(mockErrorResponse),
+      })
+      .mockReturnValueOnce({
+        getContentText: () => JSON.stringify(mockErrorResponse),
+      })
+      .mockReturnValueOnce({
+        getContentText: () => JSON.stringify(mockErrorResponse),
+      })
+      .mockReturnValue({
+        getContentText: () => JSON.stringify(mockMerchantCenterAPIResponse),
+      });
+
+    const response = api.call(mockMerchantCenterAPIRequest);
+
+    expect(UrlFetchApp.fetch).toHaveBeenCalledTimes(4);
+    expect(Utilities.sleep).toHaveBeenCalledWith(1000);
+    expect(Utilities.sleep).toHaveBeenCalledWith(2000);
+    expect(Utilities.sleep).toHaveBeenCalledWith(4000);
+    expect(response).toEqual(mockMerchantCenterAPIResponse);
+  });
+
+  it('call() should throw an error after max retries', () => {
+    const mockErrorResponse = {
+      error: {
+        code: 500,
+        message: 'Internal server error',
+      },
+    };
+
+    // Simulate API error for all calls
+    (UrlFetchApp.fetch as jest.Mock).mockReturnValue({
+      getContentText: () => JSON.stringify(mockErrorResponse),
+    });
+
+    expect(() => {
+      api.call(mockMerchantCenterAPIRequest, 3);
+    }).toThrowError('Internal server error');
+
+    expect(UrlFetchApp.fetch).toHaveBeenCalledTimes(4);
+  });
+
   it('getReport() should retrieve a report from the Merchant Center', () => {
     jest.spyOn(api, 'call').mockReturnValue(mockMerchantCenterAPIResponse);
     jest
@@ -179,7 +235,7 @@ describe('MerchantCenterAPI', () => {
     expect(report).toEqual(mockMerchantCenterAPIResponse.results);
   });
 
-  it('should retrieve all pages of a report from the Merchant Center when fetchAll is true', () => {
+  it('callAllPages() should retrieve all pages of a report from the Merchant Center when fetchAll is true', () => {
     mockMerchantCenterAPIReportRequest.fetchAll = true;
 
     jest

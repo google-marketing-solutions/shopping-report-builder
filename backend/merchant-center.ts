@@ -72,7 +72,7 @@ export class MerchantCenterAPI {
       },
       muteHttpExceptions: true,
     };
-    if (payload && Object.keys(payload).length > 0){
+    if (payload && Object.keys(payload).length > 0) {
       request.payload = payload;
     }
     return request;
@@ -81,28 +81,55 @@ export class MerchantCenterAPI {
   /**
    * Makes a call to the API with exponential backoff for retries.
    * @param {MerchantCenterAPIRequest} request - The API request.
+   * @param {number} [maxRetries=5] - The maximum number of retries.
+   * @param {number} [initialDelayMs=1000] - The initial delay in milliseconds.
    * @returns {MerchantCenterAPIResponse} The API call response.
    */
-  call(request: MerchantCenterAPIRequest): MerchantCenterAPIResponse {
+  call(
+    request: MerchantCenterAPIRequest,
+    maxRetries = 5,
+    initialDelayMs = 1000,
+  ): MerchantCenterAPIResponse {
     Logger.log(
       `Running call() for ${request.url} with ` +
         `${JSON.stringify(request.payload)}`,
     );
-    const params: {[key: string]: any} = {...request};
-    if (request.payload && Object.keys(request.payload).length > 0) {
-      params.payload = JSON.stringify(request.payload);
+    let retryCount = 0;
+    let delayMs = initialDelayMs;
+    while (retryCount <= maxRetries) {
+      try {
+        const params: {[key: string]: any} = {...request};
+        if (request.payload && Object.keys(request.payload).length > 0) {
+          params.payload = JSON.stringify(request.payload);
+        }
+        delete params.url;
+
+        const response = UrlFetchApp.fetch(request.url, params);
+        const responseJson = JSON.parse(response.getContentText());
+
+        if (responseJson.error) {
+          Logger.log(`API Error: ${responseJson.error.message}`);
+          throw new Error(responseJson.error.message);
+        }
+
+        return responseJson as MerchantCenterAPIResponse;
+      } catch (error) {
+        retryCount++;
+        if (retryCount <= maxRetries) {
+          Logger.log(
+            `Error making API call (attempt ${retryCount}): ` +
+            `${(error as Error).message}. Retrying in ${delayMs}ms...`
+          );
+          Utilities.sleep(delayMs);
+          delayMs *= 2;
+        } else {
+          Logger.log(`Max retries reached. Error: ${(error as Error).message}`);
+          throw error;
+        }
+      }
     }
-    delete params.url;
-
-    const response = UrlFetchApp.fetch(request.url, params);
-    const responseJson = JSON.parse(response.getContentText());
-
-    if (responseJson.error) {
-      Logger.log(`API Error: ${responseJson.error.message}`);
-      throw new Error(responseJson.error.message);
-    }
-
-    return responseJson as MerchantCenterAPIResponse;
+    // To satisfy typescript compiler.
+    throw new Error('This should never happen');
   }
 
   /**

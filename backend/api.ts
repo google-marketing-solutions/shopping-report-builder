@@ -73,14 +73,12 @@ function previewMerchantCenterReport(
  * @param {string} query - The API query.
  * @param {number} merchantId - The Merchant Center ID.
  * @param {string} sheetName - The name of the sheet to export to.
- * @param {number} [pageSize=1000] - The number of results per page.
  * @returns {APIResponse} The API response indicating export status.
  */
 function exportMerchantCenterReport(
   query: string,
   merchantId: number,
   sheetName: string,
-  pageSize: number = 1000,
 ): APIResponse {
   Logger.log(
     `Running exportMerchantCenterReport() for "${query}" for merchant: ` +
@@ -94,7 +92,7 @@ function exportMerchantCenterReport(
       fetchAll: true,
       payload: {
         query: query,
-        pageSize,
+        pageSize: 1000,
       },
     };
     const response = api.getReport(request);

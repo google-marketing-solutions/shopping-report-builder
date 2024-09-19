@@ -13,3 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * @fileoverview API endpoints for the UI that orchestrate the key executions.
+ */
+
+import {MerchantCenterAPI} from "./merchant-center";
+import {MerchantCenterAPIReportRequest} from "./models";
+import {getOAuthToken} from "./utils";
+
+/**
+ * Fetches a preview of the data from the Merchant Center API.
+ *
+ * @param {string} query - The API query.
+ * @param {number} merchantId - The Merchant Center ID.
+ * @param {number} [pageSize=10] - The number of results to return.
+ * @returns {any[]} The preview data (top 10 results).
+ */
+function previewMerchantCenterReport(
+  query: string,
+  merchantId: number,
+  pageSize: number = 10,
+): any[] {
+  Logger.log(
+    `Running previewMerchantCenterReport() for "${query}" for merchant: ` +
+    `${merchantId}`);
+  const token = getOAuthToken();
+  const api = new MerchantCenterAPI(token);
+  const request: MerchantCenterAPIReportRequest  = {
+    merchantId: merchantId,
+    fetchAll: false,
+    payload: {
+      query: query,
+      pageSize,
+    },
+  };
+  const response = api.getReport(request);
+  return api.flatten(response);
+}
+
+export {
+  previewMerchantCenterReport
+};

@@ -184,6 +184,7 @@ export class MerchantCenterAPI {
    * @returns {any[]} The flattened data with all nested properties extracted.
    */
   flatten(responseData: any[]): any[] {
+    Logger.log(`Running flatten()`);
     return responseData.map((item) => {
       const flattenedItem: {[key: string]: any} = {};
 

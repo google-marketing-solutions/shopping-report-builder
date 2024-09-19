@@ -19,10 +19,12 @@
  * All code in this file is imported to Apps Script and deployed as the backend.
  */
 
+import {previewMerchantCenterReport} from "./api";
 import {doGet, include} from "./deployment";
 import {MerchantCenterAPI} from "./merchant-center";
 import {getOAuthToken} from "./utils";
 
+previewMerchantCenterReport;
 doGet;
 include;
 MerchantCenterAPI;

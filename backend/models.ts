@@ -58,3 +58,12 @@ export interface MerchantCenterAPIReportRequest {
     pageToken?: string;
   };
 }
+
+/**
+ * Interface for the API response.
+ */
+export interface APIResponse<T = any> {
+  success: boolean;
+  message?: string;
+  data?: T;
+}

@@ -14,21 +14,25 @@
  * limitations under the License.
  */
 
-import {previewMerchantCenterReport} from '../api';
+import {exportMerchantCenterReport, previewMerchantCenterReport} from '../api';
+import {writeToGoogleSheet} from '../google-sheets';
 import {MerchantCenterAPI} from '../merchant-center';
+import {APIResponse} from '../models';
 import {getOAuthToken} from '../utils';
 
 jest.mock('../merchant-center');
+jest.mock('../models');
 jest.mock('../utils');
+jest.mock('../google-sheets');
 
 global.Logger = {
   log: jest.fn(),
 } as any;
 
 describe('API functions', () => {
-  const mockMerchantCenterAPI = jest.mocked(MerchantCenterAPI, {
-    shallow: false,
-  });
+  const mockMerchantCenterAPI = MerchantCenterAPI as jest.MockedClass<
+    typeof MerchantCenterAPI
+  >;
   const mockToken = 'mock_oauth_token';
 
   beforeEach(() => {
@@ -65,21 +69,108 @@ describe('API functions', () => {
       mockFlattenedResponse,
     );
 
-    const previewData = previewMerchantCenterReport(mockQuery, mockMerchantId);
+    const result: APIResponse = previewMerchantCenterReport(
+      mockQuery,
+      mockMerchantId,
+    );
 
-    expect(getOAuthToken).toHaveBeenCalled();
-    expect(MerchantCenterAPI).toHaveBeenCalledWith(mockToken);
+    expect(result).toEqual({
+      success: true,
+      data: mockFlattenedResponse,
+    });
+  });
+
+  it('previewMerchantCenterReport() should handle errors and return an APIResponse with an error message', () => {
+    const mockQuery = 'SELECT product_view.title FROM ProductView';
+    const mockMerchantId = 123456789;
+    const mockError = new Error('Some API error');
+
+    mockMerchantCenterAPI.prototype.getReport.mockImplementation(() => {
+      throw mockError;
+    });
+
+    const result: APIResponse = previewMerchantCenterReport(
+      mockQuery,
+      mockMerchantId,
+    );
+
+    expect(Logger.log).toHaveBeenCalledWith(
+      `Error fetching preview data: ${mockError}`,
+    );
+    expect(result).toEqual({
+      success: false,
+      message: `Error fetching preview data: ${mockError}`,
+    });
+  });
+
+  it('exportMerchantCenterReport() should fetch, flatten, and export data to Google Sheet', () => {
+    const mockQuery = 'SELECT offer_view.title FROM OfferView';
+    const mockMerchantId = 987654321;
+    const mockSheetName = 'Export Sheet';
+    const mockResponse = [
+      {
+        offerView: {
+          title: 'Offer 1',
+        },
+      },
+    ];
+    const mockFlattenedResponse = [
+      {
+        'offerView.title': 'Offer 1',
+      },
+    ];
+
+    mockMerchantCenterAPI.prototype.getReport.mockReturnValue(mockResponse);
+    mockMerchantCenterAPI.prototype.flatten.mockReturnValue(
+      mockFlattenedResponse,
+    );
+
+    const result: APIResponse = exportMerchantCenterReport(
+      mockQuery,
+      mockMerchantId,
+      mockSheetName,
+    );
+
     expect(mockMerchantCenterAPI.prototype.getReport).toHaveBeenCalledWith({
       merchantId: mockMerchantId,
-      fetchAll: false,
+      fetchAll: true,
       payload: {
         query: mockQuery,
-        pageSize: 10,
+        pageSize: 1000,
       },
     });
     expect(mockMerchantCenterAPI.prototype.flatten).toHaveBeenCalledWith(
       mockResponse,
     );
-    expect(previewData).toEqual(mockFlattenedResponse);
+    expect(writeToGoogleSheet).toHaveBeenCalledWith(
+      mockFlattenedResponse,
+      mockSheetName,
+    );
+    expect(result).toEqual({success: true});
+  });
+
+  it('exportMerchantCenterReport() should handle errors and return an APIResponse with an error message', () => {
+    const mockQuery = 'SELECT offer_view.title FROM OfferView';
+    const mockMerchantId = 987654321;
+    const mockSheetName = 'Export Sheet';
+    const mockError = new Error('Some API error');
+
+    mockMerchantCenterAPI.prototype.getReport.mockImplementation(() => {
+      throw mockError;
+    });
+
+    const result: APIResponse = exportMerchantCenterReport(
+      mockQuery,
+      mockMerchantId,
+      mockSheetName,
+    );
+
+    expect(Logger.log).toHaveBeenCalledWith(
+      `Error exporting data: ${mockError}`,
+    );
+    expect(result).toEqual({
+      success: false,
+      message: `Error exporting data: ${mockError}`,
+    });
   });
 });

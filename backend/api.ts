@@ -18,8 +18,9 @@
  * @fileoverview API endpoints for the UI that orchestrate the key executions.
  */
 
+import {writeToGoogleSheet} from "./google-sheets";
 import {MerchantCenterAPI} from "./merchant-center";
-import {MerchantCenterAPIReportRequest} from "./models";
+import {APIResponse, MerchantCenterAPIReportRequest} from "./models";
 import {getOAuthToken} from "./utils";
 
 /**
@@ -28,30 +29,87 @@ import {getOAuthToken} from "./utils";
  * @param {string} query - The API query.
  * @param {number} merchantId - The Merchant Center ID.
  * @param {number} [pageSize=10] - The number of results to return.
- * @returns {any[]} The preview data (top 10 results).
+ * @returns {APIResponse} The API response with preview data.
  */
 function previewMerchantCenterReport(
   query: string,
   merchantId: number,
   pageSize: number = 10,
-): any[] {
+): APIResponse {
   Logger.log(
     `Running previewMerchantCenterReport() for "${query}" for merchant: ` +
-    `${merchantId}`);
-  const token = getOAuthToken();
-  const api = new MerchantCenterAPI(token);
-  const request: MerchantCenterAPIReportRequest  = {
-    merchantId: merchantId,
-    fetchAll: false,
-    payload: {
-      query: query,
-      pageSize,
-    },
-  };
-  const response = api.getReport(request);
-  return api.flatten(response);
+      `${merchantId}`,
+  );
+  try {
+    const token = getOAuthToken();
+    const api = new MerchantCenterAPI(token);
+    const request: MerchantCenterAPIReportRequest = {
+      merchantId: merchantId,
+      fetchAll: false,
+      payload: {
+        query: query,
+        pageSize,
+      },
+    };
+    const response = api.getReport(request);
+    const flattenedData = api.flatten(response);
+
+    return {
+      success: true,
+      data: flattenedData,
+    };
+  } catch (error) {
+    Logger.log(`Error fetching preview data: ${error}`);
+    return {
+      success: false,
+      message: `Error fetching preview data: ${error}`,
+    };
+  }
 }
 
-export {
-  previewMerchantCenterReport
-};
+/**
+ * Fetches all data from the Merchant Center API and exports it to a Google Sheet.
+ *
+ * @param {string} query - The API query.
+ * @param {number} merchantId - The Merchant Center ID.
+ * @param {string} sheetName - The name of the sheet to export to.
+ * @param {number} [pageSize=1000] - The number of results per page.
+ * @returns {APIResponse} The API response indicating export status.
+ */
+function exportMerchantCenterReport(
+  query: string,
+  merchantId: number,
+  sheetName: string,
+  pageSize: number = 1000,
+): APIResponse {
+  Logger.log(
+    `Running exportMerchantCenterReport() for "${query}" for merchant: ` +
+      `${merchantId} to sheet: ${sheetName}`,
+  );
+  try {
+    const token = getOAuthToken();
+    const api = new MerchantCenterAPI(token);
+    const request: MerchantCenterAPIReportRequest = {
+      merchantId: merchantId,
+      fetchAll: true,
+      payload: {
+        query: query,
+        pageSize,
+      },
+    };
+    const response = api.getReport(request);
+    const flattenedData = api.flatten(response);
+
+    writeToGoogleSheet(flattenedData, sheetName);
+
+    return { success: true };
+  } catch (error) {
+    Logger.log(`Error exporting data: ${error}`);
+    return {
+      success: false,
+      message: `Error exporting data: ${error}`,
+    };
+  }
+}
+
+export { previewMerchantCenterReport, exportMerchantCenterReport };

@@ -110,7 +110,7 @@ describe('MerchantCenterAPI', () => {
         Authorization: 'Bearer ' + api.token,
       },
       muteHttpExceptions: true,
-      payload: JSON.stringify(payload),
+      payload: payload,
     };
 
     const request = api.buildMerchantCenterAPIRequest(service, method, payload);
@@ -147,10 +147,10 @@ describe('MerchantCenterAPI', () => {
       getContentText: () => JSON.stringify(mockMerchantCenterAPIResponse),
     });
 
-    mockMerchantCenterAPIRequest.payload = JSON.stringify({
+    mockMerchantCenterAPIRequest.payload = {
       query: 'SELECT 1 FROM 2',
       pageSize: 10,
-    });
+    };
 
     const response = api.call(mockMerchantCenterAPIRequest);
 
@@ -161,7 +161,7 @@ describe('MerchantCenterAPI', () => {
         contentType: mockMerchantCenterAPIRequest.contentType,
         headers: mockMerchantCenterAPIRequest.headers,
         muteHttpExceptions: mockMerchantCenterAPIRequest.muteHttpExceptions,
-        payload: mockMerchantCenterAPIRequest.payload,
+        payload: JSON.stringify(mockMerchantCenterAPIRequest.payload),
       },
     );
     expect(response).toEqual(mockMerchantCenterAPIResponse);
@@ -196,14 +196,14 @@ describe('MerchantCenterAPI', () => {
   });
 
   it('callAllPages() should retrieve all pages of a report', () => {
-    mockMerchantCenterAPIRequest.payload = JSON.stringify({
+    mockMerchantCenterAPIRequest.payload = {
       query:
         'SELECT ' +
         'product_view.id, ' +
         'product_view.title, ' +
         'FROM ProductView',
       pageSize: 10,
-    });
+    };
 
     const mockResponses: MerchantCenterAPIResponse[] = [
       {
@@ -239,10 +239,10 @@ describe('MerchantCenterAPI', () => {
     expect(api.call).toHaveBeenNthCalledWith(1, mockMerchantCenterAPIRequest);
     expect(api.call).toHaveBeenNthCalledWith(2, {
       ...mockMerchantCenterAPIRequest,
-      payload: JSON.stringify({
-        ...JSON.parse(mockMerchantCenterAPIRequest.payload || '{}'),
+      payload: {
+        ...mockMerchantCenterAPIRequest.payload,
         pageToken: 'token1',
-      }),
+      },
     });
 
     const expectedResults = mockResponses.reduce((acc, response) => {

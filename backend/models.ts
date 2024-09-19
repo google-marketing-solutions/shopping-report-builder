@@ -29,7 +29,9 @@ export interface MerchantCenterAPIRequest {
     Authorization: string;
   };
   muteHttpExceptions: boolean;
-  payload?: string;
+  payload?: {
+    [key: string]: any;
+  };
 }
 
 /**

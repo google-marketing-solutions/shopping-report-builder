@@ -72,16 +72,14 @@ export class MerchantCenterAPI {
       },
       muteHttpExceptions: true,
     };
-
-    if (Object.keys(payload).length !== 0) {
-      request.payload = JSON.stringify(payload);
+    if (payload && Object.keys(payload).length > 0){
+      request.payload = payload;
     }
-
     return request;
   }
 
   /**
-   * Makes a call to the Merchant Center API.
+   * Makes a call to the API with exponential backoff for retries.
    * @param {MerchantCenterAPIRequest} request - The API request.
    * @returns {MerchantCenterAPIResponse} The API call response.
    */
@@ -91,7 +89,11 @@ export class MerchantCenterAPI {
         `${JSON.stringify(request.payload)}`,
     );
     const params: {[key: string]: any} = {...request};
+    if (request.payload && Object.keys(request.payload).length > 0) {
+      params.payload = JSON.stringify(request.payload);
+    }
     delete params.url;
+
     const response = UrlFetchApp.fetch(request.url, params);
     const responseJson = JSON.parse(response.getContentText());
 
@@ -118,9 +120,8 @@ export class MerchantCenterAPI {
     do {
       const requestCopy = {...request};
       if (nextPageToken) {
-        const parsedPayload = JSON.parse(requestCopy.payload || '{}');
-        parsedPayload.pageToken = nextPageToken;
-        requestCopy.payload = JSON.stringify(parsedPayload);
+        requestCopy.payload = request.payload || {};
+        requestCopy.payload.pageToken = nextPageToken;
       }
 
       const response = this.call(requestCopy);

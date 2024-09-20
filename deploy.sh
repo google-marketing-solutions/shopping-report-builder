@@ -11,11 +11,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 cd backend
 npm install -D
 npm run deploy || exit
 
-cd ..
+cd ../ui
+npm install -D
+npm run deploy || exit
 
+cd ..
 cp .clasp.json dist/
 clasp push
+clasp deploy | tail -1 | awk '{print "https://script.google.com/a/macros/google.com/s/" $2 "/exec"}'

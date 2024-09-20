@@ -1,11 +1,13 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
 # Compiled output
-dist/
+/dist
 /tmp
 /out-tsc
 /bazel-out
 
 # Node
-node_modules
+/node_modules
 npm-debug.log
 yarn-error.log
 
@@ -19,7 +21,6 @@ yarn-error.log
 *.sublime-workspace
 
 # Visual Studio Code
-.vscode/
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -28,7 +29,7 @@ yarn-error.log
 .history/*
 
 # Miscellaneous
-.angular/cache
+/.angular/cache
 .sass-cache/
 /connect.lock
 /coverage
@@ -39,6 +40,3 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
-
-# Clasp
-.clasp.json

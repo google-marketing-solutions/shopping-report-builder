@@ -13,3 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+.control-panel{
+  width: calc(100% - 40px);
+  background-color: var(--md-sys-color-surface-container);
+  color: var(--md-sys-color-on-surface-container);
+  border-radius: 10px;
+  margin: 20px;
+
+  .control-panel-container{
+    display: flex;
+    padding: 20px;
+  }
+}

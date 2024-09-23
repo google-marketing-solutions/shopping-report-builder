@@ -35,3 +35,7 @@ body {
   color: var(--md-sys-color-primary);
   background-color: var(--md-sys-color-background);
 }
+
+.spacer {
+  flex: 1 1 auto;
+}

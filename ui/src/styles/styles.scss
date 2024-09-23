@@ -13,13 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@use "@angular/material" as mat;
+
+// Define a minimal theme to generate the structural components of material
+// design.
+$theme: mat.define-theme(());
+
+:root {
+  @include mat.all-component-themes($theme);
+}
+
 html {
   height: 100%;
 }
+
 body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   margin: 0;
   padding: 0;
   height: 100%;
-  color: #fff;
+  color: var(--md-sys-color-primary);
+  background-color: var(--md-sys-color-background);
 }

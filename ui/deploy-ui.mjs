@@ -18,7 +18,7 @@ import fs from 'fs-extra';
 import path from 'path';
 
 const cwd = process.cwd();
-const uiDist = path.join(cwd, '../dist/ui');
+const uiDist = path.join(cwd, '../dist/ui/browser');
 const distDir = path.join(cwd, '../dist');
 
 // Helper function to process and write file content

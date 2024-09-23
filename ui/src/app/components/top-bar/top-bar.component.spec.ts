@@ -13,6 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {Routes} from '@angular/router';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-export const routes: Routes = [];
+import {TopBarComponent} from './top-bar.component';
+
+describe('TopBarComponent', () => {
+  let component: TopBarComponent;
+  let fixture: ComponentFixture<TopBarComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [TopBarComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(TopBarComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

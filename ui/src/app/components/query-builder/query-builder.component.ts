@@ -13,6 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {Routes} from '@angular/router';
+import {Component} from '@angular/core';
 
-export const routes: Routes = [];
+@Component({
+  selector: 'app-query-builder',
+  standalone: true,
+  imports: [],
+  templateUrl: './query-builder.component.html',
+  styleUrl: './query-builder.component.scss',
+})
+export class QueryBuilderComponent {}

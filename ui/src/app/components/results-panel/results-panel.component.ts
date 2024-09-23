@@ -13,6 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {Routes} from '@angular/router';
+import {Component} from '@angular/core';
 
-export const routes: Routes = [];
+@Component({
+  selector: 'app-results-panel',
+  standalone: true,
+  imports: [],
+  templateUrl: './results-panel.component.html',
+  styleUrl: './results-panel.component.scss',
+})
+export class ResultsPanelComponent {}

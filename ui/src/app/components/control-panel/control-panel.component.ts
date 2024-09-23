@@ -13,6 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {Routes} from '@angular/router';
+import {Component} from '@angular/core';
 
-export const routes: Routes = [];
+@Component({
+  selector: 'app-control-panel',
+  standalone: true,
+  imports: [],
+  templateUrl: './control-panel.component.html',
+  styleUrl: './control-panel.component.scss',
+})
+export class ControlPanelComponent {}

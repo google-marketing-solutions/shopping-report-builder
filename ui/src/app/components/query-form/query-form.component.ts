@@ -13,18 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import {Component} from '@angular/core';
-import {QueryFormComponent} from './components/query-form/query-form.component';
-import {TopBarComponent} from './components/top-bar/top-bar.component';
+import {ControlPanelComponent} from '../control-panel/control-panel.component';
+import {MessageBarComponent} from '../message-bar/message-bar.component';
+import {QueryBuilderComponent} from '../query-builder/query-builder.component';
+import {ResultsPanelComponent} from '../results-panel/results-panel.component';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-query-form',
   standalone: true,
-  imports: [QueryFormComponent, TopBarComponent],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss',
+  imports: [
+    ControlPanelComponent,
+    MessageBarComponent,
+    QueryBuilderComponent,
+    ResultsPanelComponent,
+  ],
+  templateUrl: './query-form.component.html',
+  styleUrl: './query-form.component.scss',
 })
-export class AppComponent {
-  title = 'ui';
-}
+export class QueryFormComponent {}

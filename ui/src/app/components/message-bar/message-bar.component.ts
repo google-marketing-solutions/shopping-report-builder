@@ -13,6 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {Routes} from '@angular/router';
+import {Component} from '@angular/core';
 
-export const routes: Routes = [];
+@Component({
+  selector: 'app-message-bar',
+  standalone: true,
+  imports: [],
+  templateUrl: './message-bar.component.html',
+  styleUrl: './message-bar.component.scss',
+})
+export class MessageBarComponent {}

@@ -5,7 +5,6 @@ in Google Merchant Center](
     https://developers.google.com/shopping-content/guides/reports/overview) for
 users who are less familiar with coding.
 
-
 ## The Problem
 The Google Merchant Center UI doesn't allow exporting all available fields. This
 can be a hurdle for users who need specific data for tasks like optimization,
@@ -17,13 +16,38 @@ Users can construct custom queries based on the Content API to extract specific
 data from Merchant Center. The extracted information is then populated directly
 into the Google Sheet, ready for analysis and further reporting.
 
+![UI Overview](./docs/images/ui-overview.png)
+
 ## Getting Started
 The easiest method for most users is to:
 
 1. Create a copy of the provided Google Sheet.
-2. Deploy the UI
-3. Use the data: Once the UI is deployed, you can use it to generate reports and
-   populate the Google Sheet.
+2. Go to `Extensions` -> `Apps Script`.
+![Open Apps Script screenshot](./docs/images/open-apps-script.png)
+3. Deploy the UI:
+   1. Press `Deploy` -> `New Deployment`
+      ![New Deployment screenshot](./docs/images/new-deployment.png)
+   2. Press `Deploy` in the pop up:
+      ![Deploy popup screenshot](./docs/images/deployment-popup.png)
+   3. Copy and save the URL from the window: this is where you view the UI:
+      ![Deploy success screenshot](./docs/images/successful-deployment.png)
+4. Open the deployment URL for the UI. The first time you do this you'll see a
+   pop up about permissions. You need to press the `review permissions` button,
+   and approve the app access.
+   ![review permissions](./docs/images/review-permissions.png)
+
+### Optional Config
+
+#### Merchant ID Autocomplete
+The UI has an autocomplete on the merchant ID field to save you having to
+remember your IDs. These values are pulled from Column A of the "Config" sheet.
+You do not need to select one of these options in the UI, so this is optional.
+
+The description column is to provide some helpful notes if you have a few
+accounts.
+
+![autocomplete config](./docs/images/configure-autocomplete-merchant-ids.png)
+![autocomplete demo](./docs/images/merchant-id-auto-complete.png)
 
 ## Advanced Users
 
@@ -67,6 +91,10 @@ The project is organized as follows:
 - `/backend`: Contains all the Google Apps Script code responsible for
   interacting with the Reporting API and populating the Sheet.
 - `/ui`: Contains the Angular code for the user interface.
+
+The subdirectories are configured to build the production code in a shared
+`/dist` folder in the parent directory. Clasp then pushes all these files to
+Apps Script.
 
 ## Example Queries
 

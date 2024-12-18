@@ -21,7 +21,8 @@ into the Google Sheet, ready for analysis and further reporting.
 ## Getting Started
 The easiest method for most users is to:
 
-1. Create a copy of the provided Google Sheet.
+1. Create a copy of [this Google Sheet](
+   https://docs.google.com/spreadsheets/d/1rPTfluBVhydjXS8BSnI8xHtk3ilzaBA_VnRMw3Y40HY/copy).
 2. Go to `Extensions` -> `Apps Script`.
 ![Open Apps Script screenshot](./docs/images/open-apps-script.png)
 3. Deploy the UI:

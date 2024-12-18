@@ -109,15 +109,84 @@ Apps Script.
 
 ## Example Queries
 
-Pull your products and their click potential:
+Here's a sample you can use to view click potential for your products and help
+you prioritize your efforts:
 ```
 SELECT
   product_view.id,
   product_view.offer_id,
+  product_view.aggregated_destination_status,
   product_view.click_potential,
   product_view.click_potential_rank
 FROM
   ProductView
+ORDER BY
+  product_view.click_potential_rank
+```
+
+Here's a sample you can use to view best-selling products:
+```
+SELECT
+  best_sellers.report_date,
+  best_sellers.report_granularity,
+  best_sellers.country_code,
+  best_sellers.category_id,
+  best_sellers.rank,
+  best_sellers.previous_rank,
+  best_sellers.relative_demand,
+  best_sellers.previous_relative_demand,
+  best_sellers.relative_demand_change,
+  product_cluster.title,
+  product_cluster.brand,
+  product_cluster.category_l1,
+  product_cluster.category_l2,
+  product_cluster.category_l3,
+  product_cluster.variant_gtins,
+  product_cluster.inventory_status,
+  product_cluster.brand_inventory_status
+FROM
+  BestSellersProductClusterView
+WHERE
+  best_sellers.report_date = '2024-12-02'
+  AND best_sellers.report_granularity = 'WEEKLY'
+  AND best_sellers.country_code = 'GB'
+  AND best_sellers.category_id = 166
+ORDER BY
+  best_sellers.rank
+```
+
+Here's a sample you can use to view price competitiveness data, remembering that
+prices are in micros. This means you'll have to divide the prices by 1,000,000:
+
+```
+SELECT
+  product_view.id,
+  product_view.title,
+  product_view.brand,
+  product_view.price_micros,
+  product_view.currency_code,
+  price_competitiveness.country_code,
+  price_competitiveness.benchmark_price_micros,
+  price_competitiveness.benchmark_price_currency_code
+FROM
+  PriceCompetitivenessProductView
+```
+
+Here's a sample you can use to view suggested sales prices for your products:
+```
+SELECT
+  product_view.id,
+  product_view.title,
+  product_view.brand,
+  product_view.price_micros,
+  product_view.currency_code,
+  price_insights.suggested_price_micros,
+  price_insights.suggested_price_currency_code,
+  price_insights.predicted_impressions_change_fraction,
+  price_insights.predicted_clicks_change_fraction,
+  price_insights.predicted_conversions_change_fraction
+FROM
+  PriceInsightsProductView
 ```
 
 ## Disclaimer

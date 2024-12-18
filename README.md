@@ -36,6 +36,16 @@ The easiest method for most users is to:
    pop up about permissions. You need to press the `review permissions` button,
    and approve the app access.
    ![review permissions](./docs/images/review-permissions.png)
+   Note about Permissions: You might see a warning that this app isn't verified
+   by Google. This is because the script uses Google's built-in, default project configuration to make it easy for anyone to use without needing to set up
+   their own, more complex, Google Cloud project. The script only accesses your
+   Google Sheet and Merchant Center data to generate reports as you request it,
+   and the code is open for you to review.
+   To proceed, press `Show Advanced` and `Go to Shopping Report Builder | Prod`.
+   ![unverified app warning](./docs/images/unverified-app-warning.png)
+   After passing the permission warnings, you should now see the UI, and be able
+   to run reports. See [example queries](#example-queries) for some inspiration
+   to get started.
 
 ### Optional Config
 

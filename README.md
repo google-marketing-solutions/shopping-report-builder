@@ -157,7 +157,6 @@ ORDER BY
 
 Here's a sample you can use to view price competitiveness data, remembering that
 prices are in micros. This means you'll have to divide the prices by 1,000,000:
-
 ```
 SELECT
   product_view.id,
@@ -187,6 +186,27 @@ SELECT
   price_insights.predicted_conversions_change_fraction
 FROM
   PriceInsightsProductView
+```
+
+Here's a sample you can use to view topic popularity and trend data:
+```
+SELECT
+  topic_trends.customer_country_code,
+  topic_trends.topic,
+  topic_trends.date,
+  topic_trends.search_interest,
+  topic_trends.last7_days_search_interest,
+  topic_trends.last30_days_search_interest,
+  topic_trends.last90_days_search_interest,
+  topic_trends.last120_days_search_interest,
+  topic_trends.next7_days_search_interest
+FROM
+  TopicTrendsView
+WHERE
+  topic_trends.customer_country_code = 'GB'
+  AND topic_trends.date BETWEEN '2024-12-01' AND '2024-12-03'
+ORDER BY
+  topic_trends.date DESC
 ```
 
 ## Disclaimer

@@ -92,7 +92,7 @@ function exportMerchantCenterReport(
       fetchAll: true,
       payload: {
         query: query,
-        pageSize: 1000,
+        pageSize: 5000,
       },
     };
     const response = api.getReport(request);

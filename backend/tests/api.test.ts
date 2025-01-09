@@ -140,7 +140,7 @@ describe('API functions', () => {
       fetchAll: true,
       payload: {
         query: mockQuery,
-        pageSize: 1000,
+        pageSize: 5000,
       },
     });
     expect(mockMerchantCenterAPI.prototype.flatten).toHaveBeenCalledWith(

@@ -209,6 +209,10 @@ ORDER BY
   topic_trends.date DESC
 ```
 
+## Additional resources
+
+To explore further possibilities, you can find comprehensive information on the [official Reports service page](https://developers.google.com/shopping-content/guides/reports/overview) within the Content API documentation. This resource provides details on the [Merchant Center Query Language](https://developers.google.com/shopping-content/guides/reports/query-language/overview) to help you understand query structure, offers [additional example queries](https://developers.google.com/shopping-content/guides/reports/competitive-visibility) for you to execute on your account, and, importantly, lists **[all available queryable fields](https://developers.google.com/shopping-content/guides/reports/fields)** for each table.
+
 ## Disclaimer
 __This is not an officially supported Google product.__
 

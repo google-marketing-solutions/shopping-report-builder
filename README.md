@@ -47,6 +47,35 @@ The easiest method for most users is to:
    to run reports. See [example queries](#example-queries) for some inspiration
    to get started.
 
+   **Organisational Policies:** If you encounter issues with permissions, your
+   Google Workspace policies might necessitate using a custom Cloud project (see
+   below).
+
+### Custom Cloud Project
+
+For enhanced control or due to organisational restrictions, you can use a custom
+Google Cloud project instead of the default Apps Script project.
+
+To set up a custom project:
+
+1. **Follow Google's Guide:** Refer to [Switch to a different standard Google
+    Cloud Platform project](https://developers.google.com/apps-script/guides/cloud-platform-projects#switch_to_a_different_standard).
+2. **Assign Required Roles:**
+    * In the IAM & Admin section of your Google Cloud Console, grant the
+    following roles to users who will be deploying the Apps Script project:
+        * **Project Browser:** Allows viewing of project resources.
+        * **OAuth Config Editor:** Permits management of OAuth configurations.
+3. **Enable the Shopping Content API:** Activate
+    `shoppingcontent.googleapis.com` within your Cloud project.
+4. **Configure OAuth Consent Screen:**
+    * Navigate to the [OAuth consent screen](
+        https://console.cloud.google.com/apis/credentials/consent) in your
+        Google Cloud Console.
+    * Follow the instructions to configure the screen. Ensure you select the
+    appropriate user type (Internal or External) and provide the necessary
+    application details.
+
+
 ### Optional Config
 
 #### Merchant ID Autocomplete
